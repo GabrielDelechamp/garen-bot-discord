@@ -263,3 +263,28 @@ class EmbedBuilder:
         )
         
         return embed
+    
+    @staticmethod
+    def create_latest_patch_embed(title: str, url: str, image_url: str) -> discord.Embed:
+        """
+        Crée un embed pour le dernier patch LoL avec image et lien.
+
+        Args:
+            title: Titre du patch
+            url: URL vers le patch complet
+            image_url: URL de l'image principale du patch
+
+        Returns:
+            discord.Embed
+        """
+        embed = discord.Embed(
+            title=title,
+            description=f"[Voir le patch complet]({url})",
+            color=0x1a73e8
+        )
+        embed.set_image(url=image_url)
+        embed.set_footer(
+            text="Données fournies par Riot Games",
+            icon_url="https://static.wikia.nocookie.net/leagueoflegends/images/1/12/League_of_Legends_icon.png"
+        )
+        return embed
