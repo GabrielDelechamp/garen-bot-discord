@@ -62,7 +62,8 @@ class GarenBot(commands.Bot):
         self.initial_extensions = [
             'cogs.summoner',
             'cogs.champions',
-            'cogs.patchnote'
+            'cogs.patchnote',
+            'cogs.leaderboard'
         ]
     
     async def setup_hook(self):
