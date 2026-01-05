@@ -18,7 +18,8 @@ CHAMPION_NAME_EXCEPTIONS = {
     "Nunu & Willump": "Nunu",
     "Kha'Zix": "Khazix",
     "Renata Glasc": "Renata",
-    "Bel'Veth": "Belveth"
+    "Bel'Veth": "Belveth",
+    "Le Blanc": "LeBlanc"
 }
 
 # Couleurs des tiers pour les embeds

@@ -63,8 +63,9 @@ class GarenBot(commands.Bot):
             'cogs.summoner',
             'cogs.champions',
             'cogs.patchnote',
-            'cogs.leaderboard'
-        ]
+            'cogs.leaderboard',
+            'cogs.lobby',
+            ]
     
     async def setup_hook(self):
         """Hook appelé lors de l'initialisation du bot"""

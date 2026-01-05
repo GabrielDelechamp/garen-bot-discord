@@ -1,5 +1,5 @@
 import discord
-from typing import Optional, Dict, Any
+from typing import List, Optional, Dict, Any
 from config import Config
 from utils.constants import TIER_COLORS, DISCORD_COLORS, QUEUE_TYPES, RANK_EMOJIS
 
@@ -74,6 +74,58 @@ class EmbedBuilder:
         
         return embed
     
+    @staticmethod
+    def create_lobby_embed(participants: List[Dict], game_mode: str) -> discord.Embed:
+        """Crée un embed pour afficher un lobby"""
+        
+        # Séparer les équipes
+        team_red = [p for p in participants if p["teamId"] == 100]
+        team_blue = [p for p in participants if p["teamId"] == 200]
+        
+        # Mapper le game mode
+        mode_names = {
+            "CLASSIC": "🏆 Ranked Solo/Duo",
+            "ARAM": "🎲 ARAM",
+            "URF": "⚡ URF",
+            # ... autres modes
+        }
+        
+        embed = discord.Embed(
+            title=f"🎮 Lobby en cours",
+            description=f"Mode: **{mode_names.get(game_mode, game_mode)}**",
+            color=discord.Color.blue()
+        )
+        
+        # Fonction helper pour formater un joueur
+        def format_player(player_data):
+            # player_data contient : pseudo, champion, rank, winrate, tags
+            champion = player_data["champion"]
+            tags_str = " • ".join(player_data["tags"]) if player_data["tags"] else "Aucun tag"
+            
+            return (
+                f"**{player_data['riot_id']}**\n"
+                f"├ {champion} ({player_data['games']} games • {player_data['wr']}% WR)\n"
+                f"├ {player_data['rank']}\n"
+                f"└ {tags_str}\n"
+            )
+        
+        # Ajouter équipe rouge
+        red_text = "\n".join([format_player(p) for p in team_red])
+        embed.add_field(
+            name="🔴 ÉQUIPE ROUGE",
+            value=red_text or "Aucun joueur",
+            inline=False
+        )
+        
+        # Ajouter équipe bleue
+        blue_text = "\n".join([format_player(p) for p in team_blue])
+        embed.add_field(
+            name="🔵 ÉQUIPE BLEUE", 
+            value=blue_text or "Aucun joueur",
+            inline=False
+        )
+        
+        return embed
     @staticmethod
     def _format_rank_data(rank_data: Optional[Dict[str, Any]]) -> str:
         """Formate les données de classement"""

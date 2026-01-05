@@ -80,6 +80,8 @@ class RiotAPIClient:
         Raises:
             RiotAPIError: Si l'API retourne une erreur
         """
+        logger.info(f"URL: {url}")
+
         if not self.session:
             raise RuntimeError("Session non initialisée. Utilisez 'async with'")
         
@@ -167,6 +169,14 @@ class RiotAPIClient:
         )
         result = await self._request(url, params={"count": count})
         return result if result else []
+    
+    async def get_lobby_by_puuid(self, puuid: str) -> Optional[Dict[str, Any]]:
+        """Récupère les infos d'un lobby via Summoner ID"""
+        url = (
+            f"https://{self.region}.api.riotgames.com/lol/spectator/v5/"
+            f"active-games/by-summoner/{puuid}"
+        )
+        return await self._request(url)
     
     async def get_champion_rotation(self) -> Optional[Dict[str, Any]]:
         """Récupère la rotation gratuite de champions"""

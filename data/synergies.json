@@ -1,0 +1,13 @@
+{
+  "_metadata": {
+    "last_updated": null,
+    "next_update": null,
+    "config": {
+      "matches_per_champion": 500,
+      "min_games_threshold": 10,
+      "target_rank": "PLATINUM",
+      "patch_duration_days": 14
+    },
+    "version": "1.0"
+  }
+}
