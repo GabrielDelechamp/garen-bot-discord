@@ -170,6 +170,20 @@ class RiotAPIClient:
         result = await self._request(url, params={"count": count})
         return result if result else []
     
+    async def get_champion_mastery_by_champion(
+        self,
+        puuid: str,
+        champion_id: int
+    ) -> Optional[Dict[str, Any]]:
+        """Récupère la mastery d'un joueur pour un champion spécifique"""
+        url = (
+            f"https://{self.region}.api.riotgames.com/lol/"
+            f"champion-mastery/v4/champion-masteries/by-puuid/"
+            f"{puuid}/by-champion/{champion_id}"
+        )
+        return await self._request(url
+    )
+
     async def get_lobby_by_puuid(self, puuid: str) -> Optional[Dict[str, Any]]:
         """Récupère les infos d'un lobby via Summoner ID"""
         url = (
@@ -216,3 +230,5 @@ class RiotAPIClient:
                 return name
         
         return None
+    
+    

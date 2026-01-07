@@ -5,6 +5,7 @@ import logging
 from typing import Optional
 
 from utils.riot_api import RiotAPIClient, RiotAPIError
+from utils.constants import RANK_EMOJIS
 from utils.embed_builder import EmbedBuilder
 from config import Config
 
@@ -116,15 +117,57 @@ class LobbyCog(commands.Cog):
                         )
                     else:
                         solo_rank = None
+
+                    rank_emoji= RANK_EMOJIS.get(solo_rank["tier"], "") if solo_rank else ""
+
+
+                    # Calcul du winrate
+                    wins = solo_rank["wins"] if solo_rank else 0
+                    losses = solo_rank["losses"] if solo_rank else 0
+                    wr=round(wins / (wins + losses) * 100, 2) if (wins + losses) > 0 else 0
+                    
+                    # Calcul du nombre de parties jouées sur le champion
+                    games = wins + losses
+
+
+
+                    # TAGS 
+                    tags = []
+
+                    # 1-Champion Mastery
+                    mastery = await self.riot_api.get_champion_mastery_by_champion(participant_puuid, champion_id)
+                    print(mastery)
+                    if mastery:
+                        points = mastery["championPoints"]
+                        level = mastery["championLevel"]
+                        if points >= 1000000:
+                            tags.append("MILLIONAIRE")
+                        elif points >= 100000:
+                            tags.append("MAIN")
+                        elif points <= 5000:
+                            tags.append("NEWBIE")
+                    
+                    # 2- Tags donnés par RIOT
+                    if league_entries:
+                        for entry in league_entries:
+                            if entry.get("hotStreak"):
+                                tags.append("🔥 HOT STREAK")
+                            if entry.get("veteran"):
+                                tags.append("🪖 VETERAN")
+                            if entry.get("freshBlood"):
+                                tags.append("CLIMBING")
+                            if entry.get("inactive"):
+                                tags.append("💤 INACTIVE")
+                    
                     # Formatter les données
                     enriched_participants.append({
                         "riot_id": riot_id,
                         "champion": champion_name,
                         "teamId": team_id,
-                        "rank": solo_rank["tier"] + " " + solo_rank["rank"] if solo_rank else "Unranked",
-                        "wr" : "None",
-                        "tags" : "None",
-                        "games" : "None",
+                        "rank": rank_emoji + " " + solo_rank["tier"] + " " + solo_rank["rank"] + " " + str(solo_rank["leaguePoints"]) + " lp" if solo_rank else "Unranked",
+                        "wr" : wr,
+                        "tags" : tags if tags else "X",
+                        "games" : games,
                     })
 
                 else :
@@ -137,6 +180,8 @@ class LobbyCog(commands.Cog):
                         "tags" : "?",
                         "games" : "?",
                     })
+
+            
             #Créer et envoyer l'embed avec les infos du lobby
             embed = EmbedBuilder.create_lobby_embed(
                 enriched_participants, 

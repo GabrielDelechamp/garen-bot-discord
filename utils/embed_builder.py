@@ -201,8 +201,6 @@ class EmbedBuilder:
         embed.set_footer(text="La rotation change chaque mardi")
         
         return embed
-    
-
 
     @staticmethod
     def create_patchnote_embed(changes_by_champ: dict, patch_old: str, patch_new: str) -> list[discord.Embed]:
